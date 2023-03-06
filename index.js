@@ -1,5 +1,7 @@
 const fs = require('fs');
 const inquirer = require('inquirer');
+const MaxLengthInputPrompt = require('inquirer-maxlength-input-prompt');
+inquirer.registerPrompt('maxlength-input', MaxLengthInputPrompt);
 const Shapes = require('./lib/shapes.js');
 const square = require('./lib/square.js');
 const circle = require('./lib/circle.js');
@@ -7,9 +9,10 @@ const triangle = require('./lib/triangle.js');
 
 inquirer.prompt([
     {
-        type:'input',
+        type:'maxlength-input',
         message: 'what 3-character text do you want in your logo?',
-        name:'logoText'
+        name:'logoText',
+        maxLength: 3
     },
     {
         type:'list',
@@ -28,26 +31,31 @@ inquirer.prompt([
         name:'textColor'
     }])
     .then((response) => {
-        const shape = response.shape;
-        switch(shape) {
+        let myShape;
+        switch(response.shape) {
             case 'square':
-                const myShape = new square(response.logoText, response.textColor, response.shapeColor);
-                console.log(myShape);
+                myShape = new square(response.logoText, response.textColor, response.shapeColor);
+                break;
+            case 'circle':
+                myShape = new circle(response.logoText, response.textColor, response.shapeColor);
+                break;
+            case 'triangle':
+                myShape = new triangle(response.logoText, response.textColor, response.shapeColor);
                 break;
         }
-        
+        fs.writeFile('./examples/logo.svg',
+    `<?xml version="1.0" standalone="no"?>
+        <svg xmlns="http://www.w3.org/2000/svg" height="100vh" width="100vw">
+            <g>
+                ${myShape.shape}
+                ${myShape.textSize}
+            </g>
+        </svg>`, (err) => 
+err ? console.log(err) : console.log('holy shit you made a logo')
+)
+
+    
     }
      );
         
-//     fs.writeFile('./examples/something.svg',
-//     `<?xml version="1.0" standalone="no"?>
-//         <svg xmlns="http://www.w3.org/2000/svg">
-//             <g>
-//                 <circle cx="55" cy="75" r="50" fill="${response.shapeColor}"/>
-//                 <text x="35" y="80" font-family="Verdana" font-size="20" fill="${response.shapeColor}">${response.logoText}</text>
-//             </g>
-//         </svg>
-//     </xml>`, (err) => 
-// err ? console.log(err) : console.log('holy shit you made a logo')
-// )
-// );
+    
