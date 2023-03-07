@@ -1,7 +1,0 @@
-<?xml version="1.0" standalone="no"?>
-        <svg xmlns="http://www.w3.org/2000/svg" height="100vh" width="100vw">
-            <g>
-                <polygon points="150, 18 244, 182 56, 182" fill="#BE81BC"/>
-                <text x="115" y="109" font-family="Verdana" font-size="45" fill="#99CC99">hat</text>
-            </g>
-        </svg>
